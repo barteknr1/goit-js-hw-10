@@ -1,18 +1,20 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
+import { fetchCountries } from './fetchCountries';
+import debounce from 'lodash.debounce';
 
 const DEBOUNCE_DELAY = 300;
-const searchBox = document.querySelector("#search-box");
 
-// const fetchCountries()
-// https://restcountries.com/#api-endpoints-v3-name
+const searchBox = document.querySelector("#search-box");
+const countryList = document.querySelector(".country-list");
+const countryInfo = document.querySelector(".country-info");
 
 Notiflix.Notify.success("Hi");
 
-fetch("https://restcountries.com/#api-endpoints-v3-name")
-    .then(resp => resp.json())
-    .then(data => {
-        console.log(data)
-        document.body.innerHTML = `${data.id}`
-    })
-    .catch(error => console.log(error))
+searchBox.addEventListener("input", debounce(e => {
+    fetchCountries(searchBox.value.trim())
+        .then(data => console.log(data))
+        
+        .catch(err => Notiflix.Notify.error(err));
+}, DEBOUNCE_DELAY));
+
